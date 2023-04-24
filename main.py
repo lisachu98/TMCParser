@@ -1,16 +1,55 @@
-# This is a sample Python script.
+import shapefile
+import binascii
+import struct
 
-# Press Shift+F10 to execute it or replace it with your code.
-# Press Double Shift to search everywhere for classes, files, tool windows, actions, and settings.
+path='poland.shp'
 
+with open(path, 'rb') as f:
+    # Odczytaj nagłówek pliku shapefile (100 bajtów)
+    header = f.read(100)
 
-def print_hi(name):
-    # Use a breakpoint in the code line below to debug your script.
-    print(f'Hi, {name}')  # Press Ctrl+F8 to toggle the breakpoint.
+    # Odczytaj magiczną liczbę (4 bajty)
+    magic_number = int.from_bytes(header[:4], byteorder='big')
+    print('Magiczna liczba:', magic_number)
 
+    # Odczytaj wersję (4 bajty)
+    version = int.from_bytes(header[28:32], byteorder='little')
+    print('Wersja:', version)
 
-# Press the green button in the gutter to run the script.
-if __name__ == '__main__':
-    print_hi('PyCharm')
+    # Odczytaj typ geometrii (4 bajty)
+    shape_type = int.from_bytes(header[32:36], byteorder='little')
+    print('Typ geometrii:', shape_type)
 
-# See PyCharm help at https://www.jetbrains.com/help/pycharm/
+    # Odczytaj bounding box (32 bajty)
+    bbox = struct.unpack('<4d', header[36:68])
+    print('Bounding box:', bbox)
+
+    # Odczytaj liczbę rekordów (4 bajty)
+    num_records = int.from_bytes(header[24:28], byteorder='little')
+    print('Liczba rekordów:', num_records)
+
+    f.seek(24) # przejście do pozycji 24 w pliku
+    checksum = binascii.hexlify(f.read(4)).decode("utf-8") # odczytanie 4 bajtów i przekształcenie do postaci heksadecymalnej
+    print("Suma kontrolna:", checksum)
+
+    f.seek(24)
+    file_length = int.from_bytes(f.read(4), byteorder='big') * 2
+
+    # Odczytaj długość nagłówka SHP (100 bajtów)
+    header_length = 100
+
+    # Oblicz długość zawartości SHP
+    content_length = file_length - header_length
+
+    # Wyświetl wyniki
+    print("File length:", file_length)
+    print("Content length:", content_length)
+
+    while True:
+        record = f.read(8)
+        if not record:
+            break
+        recHeader = int.from_bytes(record[:4], byteorder='big')
+        recLength = int.from_bytes(record[4:], byteorder='big')
+        print("Record header:", recHeader)
+        print("Record length:", recLength)
