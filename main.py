@@ -25,7 +25,7 @@ with open(path, 'rb') as f:
     print('Bounding box:', bbox)
 
     # Odczytaj liczbę rekordów (4 bajty)
-    num_records = int.from_bytes(header[24:28], byteorder='little')
+    num_records = int.from_bytes(header[24:28], byteorder='big')
     print('Liczba rekordów:', num_records)
 
     f.seek(24) # przejście do pozycji 24 w pliku
