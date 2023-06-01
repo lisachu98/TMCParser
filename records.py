@@ -2,9 +2,12 @@ import shapefile
 import numpy as np
 import matplotlib.pyplot as plt
 import geopandas as gpd
+from shapely.geometry import MultiPolygon
 from dbfread import DBF
 from mayavi import mlab
 # from geopandas.datasets.naturalearth_creation import gdf
+from mpl_toolkits.mplot3d import Axes3D
+from mpl_toolkits.mplot3d.art3d import Poly3DCollection
 
 path1 = 'poland.shp'  # scieżka do pliku shp
 
@@ -96,15 +99,44 @@ plt.plot(xy3[0], xy3[1], marker="o", markersize=10, markeredgecolor="black", mar
 plt.show()
 
 print("\n###########################################\n")
-path4 = 'multipatch.shp'
+path4 = 'synthetic_multipatch.shp'
 
 sf4 = gpd.read_file(path4)
 
+
+gdf = gpd.read_file('synthetic_multipatch.shp')
+
+# Create a 3D plot
+fig = plt.figure()
+ax = fig.add_subplot(111, projection='3d')
+
+# Iterate over the geometries and plot them as 3D patches
+geom = gdf.loc[0, 'geometry']
+for polygon in geom.geoms:
+    x, y, z = zip(*polygon.exterior.coords)
+    vertices = [list(zip(x, y, z))]
+    ax.add_collection3d(Poly3DCollection(vertices, facecolors='b', edgecolors='k'))
+
+# Set labels
+ax.set_xlabel('X')
+ax.set_ylabel('Y')
+ax.set_zlabel('Z')
+
+# Set the plot boundaries
+ax.set_xlim(0, 10)
+ax.set_ylim(0, 10)
+ax.set_zlim(0, 10)
+
+# Display the plot
+plt.show()
+
+
+
 shape_ex4 = sf4.geometry[0]
 print(shape_ex4)
-
-sf4.plot()
-plt.show()
+#
+# sf4.plot()
+# plt.show()
 
 print("\n###########################################\n")
 
