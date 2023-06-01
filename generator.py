@@ -1,31 +1,26 @@
 import geopandas as gpd
 from shapely.geometry import MultiPolygon, Polygon
-import random
 
-# Create an empty list to store the Multipatch geometries
-multipatches = []
+# Create an empty list to store the polygons of the Multipatch
+polygons = []
 
-# Generate multiple Multipatch geometries
-for _ in range(5):  # Generate 5 Multipatch geometries
-    # Create an empty list to store the polygons of the Multipatch
-    polygons = []
+# Generate the four triangle polygons for the roof
+triangle1 = Polygon([(0, 0, 0), (5, 0, 0), (2.5, 2.5, 5)])
+triangle2 = Polygon([(5, 0, 0), (5, 5, 0), (2.5, 2.5, 5)])
+triangle3 = Polygon([(5, 5, 0), (0, 5, 0), (2.5, 2.5, 5)])
+triangle4 = Polygon([(0, 5, 0), (0, 0, 0), (2.5, 2.5, 5)])
 
-    # Generate multiple polygons for the Multipatch
-    for _ in range(3):  # Generate 3 polygons for each Multipatch
-        # Generate random coordinates for the polygon's exterior
-        coords = [(random.uniform(0, 10), random.uniform(0, 10), random.uniform(0, 10)) for _ in range(4)]
+# Add the triangle polygons to the list
+polygons.extend([triangle1, triangle2, triangle3, triangle4])
 
-        # Create a polygon and append it to the list
-        polygon = Polygon(coords)
-        polygons.append(polygon)
+# Create a Multipolygon from the polygons
+multipolygon = MultiPolygon(polygons)
 
-    # Create a Multipolygon from the polygons and append it to the Multipatch list
-    multipolygon = MultiPolygon(polygons)
-    multipatches.append(multipolygon)
-# Create a GeoDataFrame with the Multipatch geometries
-gdf = gpd.GeoDataFrame(geometry=multipatches)
+# Create a GeoDataFrame with the Multipatch geometry
+gdf = gpd.GeoDataFrame(geometry=[multipolygon])
+
 # Define the output shapefile path
-output_shapefile = 'synthetic_multipatch.shp'
+output_shapefile = 'simple_roof_multipatch.shp'
 
 # Save the GeoDataFrame as a shapefile
 gdf.to_file(output_shapefile)

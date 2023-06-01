@@ -99,12 +99,14 @@ plt.plot(xy3[0], xy3[1], marker="o", markersize=10, markeredgecolor="black", mar
 plt.show()
 
 print("\n###########################################\n")
-path4 = 'synthetic_multipatch.shp'
+path4 = 'simple_roof_multipatch.shp'
+
 
 sf4 = gpd.read_file(path4)
+shape_ex4 = sf4.geometry[0]
+print(shape_ex4)
 
-
-gdf = gpd.read_file('synthetic_multipatch.shp')
+gdf = gpd.read_file('simple_roof_multipatch.shp')
 
 # Create a 3D plot
 fig = plt.figure()
@@ -132,8 +134,7 @@ plt.show()
 
 
 
-shape_ex4 = sf4.geometry[0]
-print(shape_ex4)
+
 #
 # sf4.plot()
 # plt.show()
