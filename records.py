@@ -113,11 +113,14 @@ fig = plt.figure()
 ax = fig.add_subplot(111, projection='3d')
 
 # Iterate over the geometries and plot them as 3D patches
+colors = ['r','g','b','y']
+i = 0
 geom = gdf.loc[0, 'geometry']
 for polygon in geom.geoms:
     x, y, z = zip(*polygon.exterior.coords)
     vertices = [list(zip(x, y, z))]
-    ax.add_collection3d(Poly3DCollection(vertices, facecolors='b', edgecolors='k'))
+    ax.add_collection3d(Poly3DCollection(vertices, facecolors=colors[i], edgecolors='k'))
+    i = i + 1
 
 # Set labels
 ax.set_xlabel('X')
